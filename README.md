@@ -4,10 +4,10 @@ In this site, the following items will be uploaded. I am relatively new to this 
 * __Linux__
 * __Python__
     - Language
-    - Machine Learning
+    - Machine learning
     - Autotrading
     - Etc
-* __Documentation__
+* __Document processing__
     - Vim
     - Markdown
     - Pandoc

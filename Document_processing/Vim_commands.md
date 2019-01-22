@@ -23,7 +23,7 @@ linestretch: 1.5
 * ctrl+E vs ctrl+Y: up vs down
 * d3w vs 3dw: identical
 * C vs S: Clear the rest of the line and insert mode, delete all line and insert mode
-* .: repeat the last change  
+* .: repeat the last change 
 * df\<char\>: delete until \<char\> in a line
 * J: joining the next line, also works within a visual mode
 * r: replace a char
@@ -33,13 +33,13 @@ linestretch: 1.5
     - Ending: q
     - Using: @[a\-z]
 * Digraphs: 
-    - ctrl+k+\<key\> in \<insert mode\>  
+    - ctrl+k+\<key\> in \<insert mode\>
     - :diagraph 
 * Search: 
     - / ?: forward/backward search
-    - use excape(\\) for special characthers (\. \* \[ \] \^ \% \? \~ \$)
+    - use escape(\\) for special characters (\. \* \[ \] \^ \% \? \~ \$)
     - n N: forward/backward navi
-    - / and up/down arrow for history search
+    - / and up\-down arrow for history search
     - ^text text$ tex.: start end replace with a char
 * :set hlsearch / :set nohlsearch / :nohlsearch (to clear current highlights)
 * :set incsearch / :set noincsearch
@@ -64,10 +64,10 @@ linestretch: 1.5
     - ctrl+w, j k: moves about the panes
 * Visual mode multi line editing: 
     - \> \< command indents dedents "shift width"
-    - ctrl+v to enter \<visual model\>, and then shift+i (or I), then type text, and \<esc\>
+    - ctrl+v to enter \<visual model\>, and then shift+i (or I), then type text, and \<Esc\>
     - also works with A (append), C (delete from block to the end of line)
-* >> / << also indents / dedents a line
-* 5>> / 5<< applies indents / dedents for the next 5 lines
+* \>\> / \<\< also indents / dedents a line
+* 5\>\> / 5\<\< applies indents / dedents for the next 5 lines
 * syntax on: for syntax coloring
 * Example 
     - :filetype on
@@ -83,5 +83,5 @@ linestretch: 1.5
     - :source \<file\>
 * :version shows which initialization file used
 * :set textwidth=30
-* :set fileformat=unix,dos / :set fileformat? 
+* :set fileformat=unix,dos / :set fileformat? shows the list
 

@@ -11,6 +11,7 @@ In this site, the following items will be uploaded. I am relatively new to codin
     - Vim
     - Markdown/Pandoc
 * __Utilities__
+    - GIT
     - Docker
     - Tmux
 * __Others__ 

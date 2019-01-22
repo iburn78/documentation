@@ -14,7 +14,7 @@ geometry: margin=2cm
 * ctrl+w: delete a word in the left
 * ctrl+d h: delete / backspace a char
 * ctrl+y: paste
-* ctrl+_: undo 
+* ctrl+\_: undo 
 
 ## Terminal shortcuts
 * ctrl+alt+t: open a terminal
@@ -35,8 +35,8 @@ geometry: margin=2cm
 * which \<command\>: shows absolute path of the command
 * ls -asl: a hidden, s size, l long-format
 * ls -F: \* executable \/ directory @ symbolic link
-* ls -R: recursive ls to all subdirectories
-* clear, cat [-n], touch (creates empty file), more \<file\> (page view), head/tail [-n] \<file\>
+* ls -R: recursive to all subdirectories
+* clear, cat [-n], touch (creates an empty file), more \<file\> (page view), head/tail [-n] \<file\>
 * wc [-lwc] \<file\>: l line, w word, c char count
 * cp [-r] dir1 dir2: recursive copy including subdirectories
 * mv [-i], rm [-ir]: i interactive, r recursive (to remove all subdirectories)
@@ -56,7 +56,7 @@ geometry: margin=2cm
     *  bind '"\\e[B": history-search-forward' <left \\ means single \ >
 * . ~/.bashrc: executes ~/.bashrc (source command)
 * Command substitution: \`commands here substituted with results\` (quotations are backtick)
-* \>, \>\>, |, \*?[..]: redirection, pipe, and wildcards
+* \>, \>\>, |, \*?[..]: redirection, append, pipe, and wildcards
 * command&: background processing
 * jobs [%job_number]
 * fg %job_number
@@ -65,11 +65,11 @@ geometry: margin=2cm
 * nohup \<command\> &: enables to run the command after logout
 * ps -ef: shows all info regarding processes
 * ps -ef | grep -w \<word\>: whole word matching -- the same as pgrep
-* find \<director\> -name \<filename\> -print or -ls
-* Other file handling commands: grep, sort, cmp, diff, cat (to merge)
-* Disk related commands: df, du [-s:sum]
-* Archive (without compress): tar
-* Compress: gzip
+* find \<directory\> -name \<filename\> -print or -ls
+* Other file handling commands: grep, sort, cmp, diff, cat (to merge; e.g., cat f1 f2 > f3)
+* Disk related commands: df, du [-s:sum] (refer to man)
+* Archive (without compress): tar (refer to man)
+* Compress: gzip (refer to man) 
 
 ## Other topics
 * Bash shell script (start with \#!/bin/bash ; make executable)

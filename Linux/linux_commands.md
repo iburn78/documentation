@@ -71,6 +71,7 @@ geometry: margin=2cm
 * Archive (without compress): tar (refer to man)
 * Compress: gzip (refer to man) 
 * wget "\<filename\>": downloads a file from the internet
+* strings \<filename\>: grep strings from a file (even from a binary)
 
 ## Other topics
 * Bash shell script (start with \#!/bin/bash ; make executable)

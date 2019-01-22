@@ -9,8 +9,7 @@ In this site, the following items will be uploaded. I am relatively new to this 
     - Etc
 * __Document processing__
     - Vim
-    - Markdown
-    - Pandoc
+    - Markdown/Pandoc
 * __Utilities__
     - Docker
     - Tmux

@@ -70,6 +70,7 @@ geometry: margin=2cm
 * Disk related commands: df, du [-s:sum] (refer to man)
 * Archive (without compress): tar (refer to man)
 * Compress: gzip (refer to man) 
+* wget "\<filename\>": downloads a file from the internet
 
 ## Other topics
 * Bash shell script (start with \#!/bin/bash ; make executable)

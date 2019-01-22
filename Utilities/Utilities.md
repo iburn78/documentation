@@ -12,6 +12,7 @@ geometry: margin=2cm
 * git commit \<file name\>
 * git status
 * git push
+* git pull (once git is cloned, pull checks updates)
 * git config credential.helper store \# enables to save id/pwd in local git
 
 # Docker

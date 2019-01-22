@@ -14,6 +14,7 @@ geometry: margin=2cm
 * git push
 * git pull (once git is cloned, pull checks updates)
 * git config credential.helper store \# enables to save id/pwd in local git
+* git rm -r \<directory\> to remove all its contents and directory (then commit has to be executed)
 
 # Docker
 

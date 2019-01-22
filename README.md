@@ -1,4 +1,4 @@
-In this site, the following items will be uploaded. I am relatively new to this space, and therefore most contents are for beginners to memorize. Although this site is mainly for and my own record, but public comments are also welcome.
+In this site, the following items will be uploaded. I am relatively new to coding, therefore most contents are for beginners to memorize. Although this site is mainly for my own record, but public comments are also welcome.
 
 ## List of areas
 * __Linux__

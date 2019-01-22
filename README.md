@@ -3,7 +3,7 @@ In this site, the following items will be uploaded. I am relatively new to codin
 ## List of areas
 * __Linux__
 * __Python__
-    - Language
+    - Syntax
     - Machine learning
     - Autotrading
     - Etc

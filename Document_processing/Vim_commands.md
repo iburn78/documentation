@@ -54,6 +54,8 @@ linestretch: 1.5
     - \<visual mode\> "[number]y to yank
     - \<insert mode\> ctrl+r [number] to paste
 * 0: moves to the start of a line
+* ctrl\+\[ is the same as \<Esc\>
+
 
 # Advanced
 

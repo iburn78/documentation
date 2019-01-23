@@ -53,6 +53,7 @@ linestretch: 1.5
 * Register yanking / \<insert mode\> pasting
     - \<visual mode\> "[number]y to yank
     - \<insert mode\> ctrl+r [number] to paste
+* 0: moves to the start of a line
 
 # Advanced
 

@@ -13,7 +13,7 @@ linestretch: 1.5
     * shift+enter (vscode): tests the current line in terminal / works with multiple line selection
     * "". # will show many functions associated with string class (vscode)
     * softtab: converts tab to 4 spaces (vscode)
-- Naming rule
+- naming rule
     * camel case: Class (camel case starting with small letter is not used in Python) 
     * snake case: with () - function, without () - variables
 - string cut 
@@ -39,7 +39,7 @@ linestretch: 1.5
     * "he" in "hello" # True or False
     * "10 20 30".split(" ") # ['10', '20', '30'] 
 - boolean in python: True / False (starts with upper case)
-- Date and Time 
+- date and time 
 ```    
       import datetime
       now = datetime.datetime.now()
@@ -87,7 +87,7 @@ linestretch: 1.5
       new_string = old_string.split(" ") # nondestructive
       list.append('new element') # destructive
 ```
-- String addition
+- string addition
 ```
       ("string\n" "string" ...\) # same as "string\nstring"
 ```
@@ -269,8 +269,10 @@ linestretch: 1.5
       __str__(self) # lets use str(<instance>) / python developer agreement
       __eq__(self, value), __le__(self, value), ... # operator overloading
 ```
+
     * Class variable: <Class>.variable
     * Class method:
+
 ```
       Class A:
           @classmethod

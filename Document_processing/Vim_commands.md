@@ -65,6 +65,11 @@ linestretch: 1.5
     - :buffers shows buffers 
     - :buffer number/filename shows buffer
     - ctrl+w, j k: moves about the panes
+* Multiple file editing
+    - $vim file1 file2 file3
+    - :next or :n or :ne or :3n moves windows
+    - :prev or :3prev moves to previous windows
+    - :args shows windows
 * Visual mode multi line editing: 
     - \> \< command indents dedents "shift width"
     - ctrl+v to enter \<visual model\>, and then shift+i (or I), then type text, and \<Esc\>

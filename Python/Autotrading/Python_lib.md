@@ -83,7 +83,8 @@ Kiwoom API calling
               account_num = self.kiwoom.dynamicCall("GetLoginInfo(QString)", ["ACCNO"]) 
               # "ACCNO" is input to QString 
               # It has to be the list format ["ACCNO"] for GetLoginInfo()
-
+              # QString is defined in QtCore, so QtCore.QString has to be imported if not
+              
       # Event Handler of OnEventConnect
       def event_connect(self, err_code):
           if err_code == 0:
@@ -145,6 +146,7 @@ Data structure library; mainly used structures are Series, DataFrame
                'c': [7, 8, 9]}
       
       df1 = DataFrame(dict1, index=['x', 'y', 'z'])     
+      df1.ix[0] # access to row 1 
 ```
 
 Refer to manual for various operators of Series and DataFrame
@@ -245,5 +247,48 @@ SWAPY can be used to find-out the window element/control names (github.com/pywin
 ## OS Scheduler
 
 Windows scheduler could be used to automate running programs; pythonw.exe does not open console window, so more proper for automation (Linux may have different process)
+
+## requests module and scrapping using pandas
+
+Use request module to download html from the Internet
+Then, use pandas.read_html() to parse the html
+```
+      import requests
+      import pandas as pd
+
+      html = request.get(url).text
+      df = pd.read_html(html, index_col="  ")
+```
+
+## BeautifulSoup 
+
+BeautifulSoup provides scrapping from the Internet
+```
+      import requests
+      from bs4 import BeautifulSoup
+
+      url = "url address"
+      html = requestsi.get(url).text
+      soup = BeautifulSoup(html, 'lxml')  # lxml is XML and HTML parser in Python
+      tr_data = soup.find_all('tr', id='tr_id')
+      # tr_data = soup.find_all('tr', {'class': 'class_name'}) # using dictionary format
+
+      td_data = tr_data[0].find_all('td')
+      
+      # if multiple tds exist, each td data can be accessed through the following
+      td_data[0].text
+      td_data[1].text
+      td_data[2].text
+
+      i = 0
+      for x in td_data:
+          result_list[i] = x.text
+          i += 1
+
+```
+
+## numpy
+
+NumPy is a package for scientific computing and graphs
 
 

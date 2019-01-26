@@ -96,4 +96,18 @@ linestretch: 1.5
 
 # Customized
 
-* :inoremap \<C-j\> \<Esc\> defined in .vimrc enables \<C-j\> to delete current char (i.e., delete) in \<Insert Mode\>
+* :inoremap remap key in \<Insert Mode\>
+```
+      :inoremap <C-h> <left>
+      :inoremap <C-j> <down>
+      :inoremap <C-k> <up>
+      :inoremap <C-l> <right>
+      :inoremap <C-v> <BS>
+      :inoremap <C-b> <Del>
+```
+
+* highlight when entering and leaving Insert Mode
+```
+      :autocmd InsertEnter * highlight CursorLine guifg=white guibg=darkblue ctermfg=white ctermbg=darkblue
+      :autocmd InsertLeave * highlight CursorLine guifg=white guibg=black ctermfg=white ctermbg=black
+```

@@ -54,7 +54,8 @@ geometry: margin=2cm
     *  \# History search code
     *  bind '"\\e[A": history-search-backward' <left \\ means single \ >
     *  bind '"\\e[B": history-search-forward' <left \\ means single \ >
-* . ~/.bashrc: executes ~/.bashrc (source command)
+* . ~/.bashrc: executes ~/.bashrc (source command) i
+* . (source command) lets the bash shell script to run in the current terminal
 * Command substitution: \`commands here substituted with results\` (quotations are backtick)
 * \>, \>\>, |, \*?[..]: redirection, append, pipe, and wildcards
 * command&: background processing
@@ -72,7 +73,19 @@ geometry: margin=2cm
 * Compress: gzip (refer to man) 
 * wget "\<filename\>": downloads a file from the internet
 * strings \<filename\>: grep strings from a file (even from a binary)
-
+* defining a function in .bashrc
+```
+       c() {
+           if [ "$1" == "" ]
+           then 
+               cd ~
+           else 
+               cd "$1"
+           fi
+           ls -CF
+      }
+```
+                              
 ## Other topics
 * Bash shell script (start with \#!/bin/bash ; make executable)
 * C-programming

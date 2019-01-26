@@ -10,9 +10,102 @@ linestretch: 1.5
 - VScode shortcuts
     * ctrl+space (vscode): command template
     * ctrl+shift+p (vscode): command palette 
-    * shift+enter (vscode): tests the current line in terminal / works with multiple line selection
+    * shift+enter (vscode): tests the current line in terminal / works w multiple line selection
     * "". # will show many functions associated with string class (vscode)
     * softtab: converts tab to 4 spaces (vscode)
+- variables are objects \ 
+  a = 100; [a] refers to 100 in memory; id(a): address 
+- mystring = 'hello world'; mystring refers to an array (string instance); "text" = 'text'  
+```
+      mystring[1:4]: 'ello' 
+      mystring.split('\<divider\>'): generates a list
+```
+- indent in Python means a code block
+- a = 'At'; b='work'; a+'\<space\>'+b returns 'At work'
+- List: 
+```
+      a = [1, 2, 3, 4]                 
+      a[0]: 1
+      a[-1]: 4
+      a[0:2]: [1, 2, 3]
+      a.append(5): [1, 2, 3, 4, 5]
+      a.insert(3, 3.5): [1, 2, 3, 3.5, 4, 5]
+      len(a): 6
+      del a[-1]: [1, 2, 3, 3.5, 4]
+```
+- Tuple: similar to list, but cannot be modified and is faster
+```
+      t = (1, 2, 3)
+      t[1]: 2
+      # all functions are the same in slicing and indexing as list
+```
+- Dictionary 
+```
+      price = { } # generates an empty dictionary
+      price['a'] = 100 # price: {'a':100}
+      price['b'] = 10 # price: {'a': 100, 'b':10}
+      price['a']: 100
+      price.keys(); price.values() returns keys and values
+      keys = list(price.keys()) # converts to list
+      values = list(price.values()
+      'a' in price.keys() # True 
+```
+- Bool: == != > < and or not True False 
+- if \<exp\>: elif \<exp\>: else:
+- c style print
+```
+      print("%s …" %var) # no comma before %var
+```
+- in operator
+```
+      for i in [0, 1, 2, 3, 4]:
+          print(i)
+      price_dict = {'a': 100, 'b':10, 'c':1}
+      for a, b in price_dict.items():
+          print("%s: buy %s" %(a, b))
+      for a in price_dict.keys(): 
+          print("%s: buy %s" %(a, price_dict[a]))
+```
+- list(listrange(1, 10)) returns [1, 2, …, 9] 
+- 2nd order list
+``` 
+       A = [[101, 102, 103], [201, 202, 203]]
+       A[0]: [101, 102, 103]
+       A[0][1]: 102
+       for i in A: 
+           for j in i: 
+               print(j) # 101, 102, 103 ...
+```
+- print("") includes \\n; to prevent use print("string", end="")
+- del var deletes defined variable
+- Function
+```
+      def func(argv): # argv has internal scope
+          pass # null operation 
+          return xx # any type 
+```
+- import 
+```
+      import \<directory.modulefilename\> # filename does not need .py 
+      # C-code module could be also imported (refer to external sources)
+
+      from os import listdir # only imports listdir 
+      from os import *
+      import os as linuxos # alias
+```
+- import time; time.time(); time.ctime(); time.sleep(1)
+- dir(time): shows functions in the module time (in console mode)
+- import os
+```   
+      os.getcwd(): current working space
+      os.listdir('path')
+      files = os.listdir('path')
+      len(files) # returns the number of files
+      for x in files: 
+          if x.endswith('exe')
+              print(x)
+```
+- "_" latest return value
 - naming rule
     * camel case: Class (camel case starting with small letter is not used in Python) 
     * snake case: with () - function, without () - variables
@@ -20,7 +113,7 @@ linestretch: 1.5
     * "string"[a:b]: a starts with 0, b is not included
     * either a or b can be omitted; a and/or b can be negative numbers 
 - len(): prints length of strings
-- type(): prints type
+- type(): prints type str, int, float (no long in C)
 - 0 is not equal to 0.0
 - %: residual operator
 - //: integer divide (e.g., 5/2 = 2.5, 5//2 = 2)
@@ -34,10 +127,11 @@ linestretch: 1.5
 - format function: "{} {}".format(10, 20) # "10 20"
 - string class functions: 
     * strip() / lstrip() / rstrip(): removes spaces in both/left/right
+    * rstrip('\\n'): removes '\\n' from the string
     * is...()
     * find()/rfind() # returns index starting from index 0
     * "he" in "hello" # True or False
-    * "10 20 30".split(" ") # ['10', '20', '30'] 
+    * "10 20 30".split(" ") # ['10', '20', '30']  
 - boolean in python: True / False (starts with upper case)
 - date and time 
 ```    
@@ -58,7 +152,7 @@ linestretch: 1.5
           201 <= a <=203: 
           print("a is in a specific condition")
 ```
-- using "in" operator:
+- using "in" operator example:
 ```
       b = input("b> ") # b is a string instance, can be handled like a list
       if b[-1] in "02468": 
@@ -81,6 +175,8 @@ linestretch: 1.5
     * key in dict_a # check if exists
     * dict_a.get("key") # returns None, if key does not exist  
 - range(i, j, inc) # returns range class instance; inc: increment; from i to j-1
+- range(0): nothing
+- sorted(list or other iterable) returns a sorted list or iterable
 - while / break / continue
 - two types of functions: destructive and nondestructive functions
 ```
@@ -97,7 +193,7 @@ linestretch: 1.5
 ```
 - import textwrap; textwrap.dedent("""Strings...""") # removes indents (or spaces) from the beginning of each line
 - reversed(list) # returns the reversed sequence of the list / but only once
-- enumerate in list and dictionary
+- enumerate in list and dictionary; enumerate(list, tuple, string) returns index and data; convenient when looking for data in a list or iterable
 ```
       example_list = [1, 2, 3, 4, 5]
       for index, element in enumerate(example_list):
@@ -241,6 +337,18 @@ linestretch: 1.5
       from datetime import datetime
       now = datetime.now()
 ```
+- text file open
+```
+      f = open ("path to file", "rt")  # r: read, w: write, t: text
+      lines = f.readliens()
+      for line in lines 
+          print(line)
+          nline = line.split("\n")[0]
+          print(nline)
+      f.write("xxx\n")
+      f.close()
+```
+
 - binary file open
 ```
       file = open("filename.xxx", "rb") # b keyword for binary reading
@@ -258,16 +366,58 @@ linestretch: 1.5
 - Main module vs imported
 ```
       __name__ == "__main__" 
+      # True if run independently / if imported, __name__ is the imported module name
       # checks if the current file is imported or executed
       # usually used when testing module's functionality
 ```
 - Class 
 ```
+      class A:
+          def f1():
+          def f2(self):
+      
+      A.f1()  # OK; class A works as a namespace
+      a = A()
+      a.f1()  # error 
+      a.f2()  # OK; instance always receives 'self' arg
+      A.f2(a) # also OK
+```
+Class is a namespace; variables/methods are stored as dictionary in the namespace
+```
+      A.__dict__ # listing dictionary values
+      a1 = A()
+      a2 = A()
+
+      A.market = 's'
+      a1.market = 's1'
+
+      a1.market  #s1
+      a2.market  #s
+```   
+Class inheritance 
+```
+      class A:
+          def f1(self): 
+              pass 
+
+      class B(A): # Inheritance 
+          pass
+
+      b = B()
+      b.f1() # OK
+```
+
+Constructor / Destructor 
+```
+      __init__ # constructor
+      __del__ # destructor 
+
       __init__(self, ...)
       # self: use as the first argument for class intance functions/methods
       bool_value = isinstance(instance, Class) 
       __str__(self) # lets use str(<instance>) / python developer agreement
       __eq__(self, value), __le__(self, value), ... # operator overloading
+
 ```
 
     * Class variable: <Class>.variable

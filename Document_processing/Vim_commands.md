@@ -93,3 +93,7 @@ linestretch: 1.5
 * :set textwidth=30
 * :set fileformat=unix,dos / :set fileformat? shows the list
 
+
+# Customized
+
+* :inoremap \<C-j\> \<Esc\> defined in .vimrc enables \<C-j\> to delete current char (i.e., delete) in \<Insert Mode\>

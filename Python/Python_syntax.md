@@ -432,3 +432,8 @@ Constructor / Destructor
       __del__(self) # destructor
 ```
 - garbage collector: automated in python
+
+
+## VScode intellisense icons
+![vscode intellisense icons](vscode_intellisense_icons.png){width=500}
+

@@ -85,6 +85,8 @@ geometry: margin=2cm
            ls -CF
       }
 ```
+* $mkdir -p \<path to a dir\> \&\& cd $_ 
+  # executes only if first is successful
                               
 ## Other topics
 * Bash shell script (start with \#!/bin/bash ; make executable)

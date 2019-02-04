@@ -1,29 +1,11 @@
-Machine Learning
----------------------
----------------------
-[Ch1. Crolling and Scrapping]
-Internet Information Request
-- Method: GET (POST, PUT, DELETE)
-- Target: http://media.daum.net => name of host
-- Additional info: 
-    path e.g., /photo-viewer  
-    data e.g., ?cid=318190  
-        <key>:<data>&<key>:<data>&... &query=<%...%...: Korean language encoding
-- BeautifulSoup example code
+---
+title: Machine Learning and Deep Learning note
+author: Andy Kim
+geometry: margin=2cm
+linestretch: 1.5
+---
 
-----------------
-import urllib.request
-from bs4 import BeautifulSoup
+_This is a study note for the book Machine Learning and Deep Learning by Wikibooks Korea_
 
-url = ""
-response = urllib.request.urlopen(url)
+Refer to header to each of py files to be uploaded
 
-soup = BeautifulSoup(response, "html.parser")
-result_one = soup.select_one()
-print(result_one.string, result_one.attrs['href'], result_one.attrs['class']
-results = soup.select()
-for result in results:
-    print(results.string)
-----------------
-
-- 

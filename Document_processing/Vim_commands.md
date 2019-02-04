@@ -26,7 +26,6 @@ linestretch: 1.5
 * .: repeat the last change 
 * df\<char\>: delete until \<char\> in a line
 * J: joining the next line, also works within a visual mode
-* r: replace a char
 * ~, 3~, 10~: change cases
 * Macros:
     - Recording: q[a\-z]
@@ -55,6 +54,10 @@ linestretch: 1.5
     - \<insert mode\> ctrl+r [number] to paste
 * 0: moves to the start of a line
 * ctrl\+\[ is the same as \<Esc\>
+* s: delete a char and convert to a \<Insert Mode\>
+* S: delete a whole line and convert to a \<Insert Mode\>
+* D: delete from the current position from the line and convert to \<Insert Mode\>
+* r: replace a char
 
 
 # Advanced

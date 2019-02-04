@@ -207,6 +207,8 @@ linestretch: 1.5
       }
       for key, element in example_dict.items():
           print("{}th element is {}".format(key, element))
+
+      "{:3}".format(i) # puts __i__ into {} with three digits/spaces
 ```
 - array creation: 
     * array = [i\*i for i in  range (0, 20, 2) if 100 < (i\*i) <300]
@@ -260,7 +262,7 @@ linestretch: 1.5
       print(file.read())
       file.close()
       with open("XXX.py", mode="r", encoding="UTF-8") as file:
-          print(file.read())   # no need to call close()
+          print(file.read())   # no need to call close() when used with-open
 ```
 - file read/write/append mode: has to be specified with one mode
 - exception handling
@@ -432,7 +434,20 @@ Constructor / Destructor
       __del__(self) # destructor
 ```
 - garbage collector: automated in python
+- list generation
+'''
+      list_with_10_zeros = [0 for n in range(10)]
+      list_with_power_of_two = [n**2 for n in range(0,10)]
+'''
+- enumerating alphabets
+''' 
+      for i in range(0,26):
+          print(str(chr(i+65))) # ASCII 65 is A
+'''
 
+## Korean Encoding: utf-8 or euc-kr
+
+## Regular Expression
 
 ## VScode intellisense icons
 ![vscode intellisense icons](vscode_intellisense_icons.png){width=500}

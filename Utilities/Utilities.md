@@ -32,6 +32,11 @@ geometry: margin=2cm
     * $ docker run -i -t mlearn:init /bin/bash /# "/bin/bash" might be skipped
 * To mount a folder (e.g., home)
     * $ docker run -i -t -v /c/Users/andy.kim/docker_home:/docker_home_in_image mlearn:init /bin/bash
+* To enable HTTP server environment use -p option: $ docker run -it -v $HOME:$HOME -p 8080:8080 mlearn:init /bin/bash
+* The docker flow: 
+    * Docker containers preserve its settings even stopped
+    * Mounted folders in containers are not preserved
+    * Images are snapshots of containers that are saved
 
 # Tmux 
 

@@ -4,6 +4,7 @@ author: Andy Kim
 geometry: margin=2cm
 linestretch: 1.5
 ---
+__Contents here are largely based on the book AutoTrading from Wikibooks Korea__
 
 ## COM (from Microsoft)
 

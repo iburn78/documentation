@@ -208,7 +208,7 @@ linestretch: 1.5
       for key, element in example_dict.items():
           print("{}th element is {}".format(key, element))
 
-      "{:3}".format(i) # puts __i__ into {} with three digits/spaces
+      "{:3}".format(i) # puts i into {} with three digits/spaces
 ```
 - array creation: 
     * array = [i\*i for i in  range (0, 20, 2) if 100 < (i\*i) <300]
@@ -443,6 +443,7 @@ Constructor / Destructor
 ''' 
       for i in range(0,26):
           print(str(chr(i+65))) # ASCII 65 is A
+          print(str(chr(i+ord('A')))) # ord('\<char\>') returns ASCII value
 '''
 
 ## Korean Encoding: utf-8 or euc-kr

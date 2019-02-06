@@ -32,7 +32,7 @@ geometry: margin=2cm
 ## Basic
 * history, !!, !#, !\<command\>: history search/execute
 * pwd: present working directory
-* which \<command\>: shows absolute path of the command
+* which \<command\>: shows absolute path of the command; useful when there are multiple versions
 * ls -asl: a hidden, s size, l long-format
 * ls -F: \* executable \/ directory @ symbolic link
 * ls -R: recursive to all subdirectories
@@ -87,6 +87,7 @@ geometry: margin=2cm
 ```
 * $mkdir -p \<path to a dir\> \&\& cd $_ 
   # executes only if first is successful
+* $ln -s path/to/file path/to/link: makes a symbolic link
                               
 ## Other topics
 * Bash shell script (start with \#!/bin/bash ; make executable)

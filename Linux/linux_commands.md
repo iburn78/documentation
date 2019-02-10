@@ -66,7 +66,7 @@ geometry: margin=2cm
 * nohup \<command\> &: enables to run the command after logout
 * ps -ef: shows all info regarding processes
 * ps -ef | grep -w \<word\>: whole word matching -- the same as pgrep
-* find \<directory\> -name \<filename\> -print or -ls
+* find \<directory\> -name \<filename\> -print or -ls; to use wildcard, put filename in " " or ' '
 * Other file handling commands: grep, sort, cmp, diff, cat (to merge; e.g., cat f1 f2 > f3)
 * Disk related commands: df, du [-s:sum] (refer to man)
 * Archive (without compress): tar (refer to man)
@@ -88,7 +88,8 @@ geometry: margin=2cm
 * $mkdir -p \<path to a dir\> \&\& cd $_ 
   # executes only if first is successful
 * $ln -s path/to/file path/to/link: makes a symbolic link
-                              
+* When installing software, if there is an authorization error, try --user option
+
 ## Other topics
 * Bash shell script (start with \#!/bin/bash ; make executable)
 * C-programming

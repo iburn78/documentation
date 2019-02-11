@@ -37,3 +37,24 @@ for title in titles:
 
 browser.quit()
 
+'''
+$ pip install selenuim == 3.0 to remove warnings 
+
+Or, can use Chromedriver instead
+usage: 
+$ pip install chromedriver
+use Chrome() instead of PhantomJS()
+has to set Chrome(executable_path="./chromedriver") 
+
+To use headless browser, there are settings for Chrome available
+'''
+
+print('------')
+browser = webdriver.Chrome(executable_path="./chromedriver")
+
+url = "http://www.naver.com/"
+
+browser.implicitly_wait(3)
+browser.get(url)
+browser.save_screenshot("chrome_image.png")
+browser.quit()

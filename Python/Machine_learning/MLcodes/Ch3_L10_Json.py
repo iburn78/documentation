@@ -29,7 +29,7 @@ json_example = """[
 ]"""
 
 output = json.loads(json_str) # usually using loads
-# print(type(output))    
+print(type(output)) # json.loads returns a list   
 # print(output)
 
 for item in output: 

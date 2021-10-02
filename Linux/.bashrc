@@ -125,20 +125,31 @@ bind '"\e[B": history-search-forward'
 
 c() {
     if [ "$1" == "" ]
-    then 
-	cd ~
-    else 
-	cd "$1"
+    then
+    cd ~
+    else
+    cd "$1"
     fi
     ls -CF
 }
 
-dic() {
-    if [ "$1" == "" ]
-    then 
-	echo sdcv dictionary
-    else 
-	sdcv "$1" | more
-    fi
+cdp() {
+    cd /mnt/c/Users/user/projects/
 }
 
+gacp(){
+    git add -A
+    if [ '$1' == '' ]
+    then
+        git commit -m "wip"
+    else
+        git commit -m '$1'
+    fi
+    git push
+}
+
+export PS1="\e[1;34m\w\$ \e[0m"
+
+venv(){
+    . /mnt/c/Users/user/projects/venv/bin/activate
+}         

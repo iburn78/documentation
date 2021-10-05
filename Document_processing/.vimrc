@@ -62,3 +62,6 @@ filetype plugin indent on    " required
 
 :autocmd InsertEnter * highlight CursorLine guifg=white guibg=darkblue ctermfg=white ctermbg=darkblue
 :autocmd InsertLeave * highlight CursorLine guifg=white guibg=black ctermfg=white ctermbg=black
+
+command! W write
+command! Q quit

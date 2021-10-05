@@ -32,3 +32,6 @@ set belloff=all
 
 hi Search ctermbg=DarkBlue
 hi Search ctermfg=White
+
+command! W write
+command! Q quit

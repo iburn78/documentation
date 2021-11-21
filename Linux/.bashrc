@@ -123,7 +123,7 @@ bind '"\e[A": history-search-backward'
 bind '"\e[B": history-search-forward'
 
 
-c() {
+c(){
     if [ "$1" == "" ]
     then
     cd ~
@@ -133,17 +133,17 @@ c() {
     ls -CF
 }
 
-cdp() {
+cdp(){
     cd /mnt/c/Users/user/projects/
 }
 
 gacp(){
     git add -A
-    if [ '$1' == '' ]
+    if [ "$1" == "" ]
     then
         git commit -m "wip"
     else
-        git commit -m '$1'
+        git commit -m "$1"
     fi
     git push
 }

@@ -1,3 +1,5 @@
+set langmenu=en_US
+let $LANG = 'en_US'
 set nocompatible              " be iMproved, required
 filetype off                  " required
 syntax on

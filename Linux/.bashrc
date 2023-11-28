@@ -148,8 +148,6 @@ gacp(){
     git push
 }
 
-export PS1="\e[1;34m\w\$ \e[0m"
-
 venv(){
     . /mnt/c/Users/user/projects/venv/bin/activate
 }         

@@ -90,8 +90,12 @@ geometry: margin=2cm
 * $ln -s path/to/file path/to/link: makes a symbolic link
 * When installing software, if there is an authorization error, try --user option
 
-## Other topics
-* Bash shell script (start with \#!/bin/bash ; make executable)
-* C-programming
-* Process handling
-* System admin
+# Tmux 
+* ctrl+b, c: create window
+* ctrl+b, w: list windows
+* ctrl+b, n p: next / previous window
+* ctrl+b, &: kill window
+* ctrl+b, , f: name / find window
+* ctrl+b, % ": vertical / horizontal split
+* ctrl+b, o: switch pane
+* ctrl+b, \<space\>: toggle between layouts

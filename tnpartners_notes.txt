@@ -1,0 +1,416 @@
+[TNPARTNERS BUILD NOTE]
+
+- 3/16/2023, tnpartners.net registered at Route53 per year ($11/yr, autorenewal)
+- AWS EC2 t2.nano ubuntu leased 
+- Registered the domain name to EC2
+    Create an elastic IP address at EC2 (allociate and associate)
+    At hosted zones of Route 53, create a record for issuetracker.info that contains the elastic IP address
+- Created a key pair for EC2: tnpartners.net, gmailed to me
+- ssh -i tnpartners_keypair.pem ubuntu@tnpartners.net
+- scp -i tnpartners_keypair.pem (file) ubuntu@tnpartners.net:~/(file)
+- Allow http/https/ssh traffic in EC2 Security control panel (it could be already done, if you checed options when creating EC2)
+- Change timezone: sudo timedatectl set-timezone Asia/Seoul
+- sudo apt update / upgrade sudo apt-get update / upgrade
+- ufw setting at EC2
+    sudo apt-get install ufw
+    sudo ufw default allow outgoing
+    sudo ufw default deny incoming
+    sudo ufw allow ssh
+    sudo ufw allow http/tcp
+    sudo ufw allow https
+    sudo ufw enable
+    sudo ufw status
+    (sudo ufw allow 8000 <-> sudo ufw delete allow 8000)
+- Apache2 setting at EC2
+    sudo apt-get install apache2
+    sudo vim /etc/apache2/sites-available/000-default.conf
+    ServerName issuetracker.info (uncomment the line)
+    sudo a2ensite 000-default.conf
+    sudo service apache2 restart
+    sudo service apache2 reload (probably the same command)
+    sudo systemctl reload apache2 (probably the same command)
+- HTTPS setup
+    sudo apt-get install snapd
+    sudo snap install core; sudo snap refresh core
+    sudo snap install --classic certbot
+    sudo ln -s /snap/bin/certbot /usr/bin/certbot
+    sudo certbot --apache
+    sudo certbot renew --dry-run
+    sudo apachectl configtest
+    sudo ufw allow https (done in above)
+    sudo service apache2 restart
+    * add HTTPS to security group for EC2 to include port 443 (https, done in above)
+    * CRON
+        sudo crontab -e
+        add:
+        30 4 1 * * sudo certbot renew --quiet # every month, 4:30AM, 1st day renew
+	sudo crontab -l (shows the cron list)
+	sudo crontab -e are scheduled with root's credentials while crontab -e are scheduled with logged-in user
+    (for django apache setting with https, see below)
+
+
+    ***** Regarding NodeJS *****
+    * certbot is required for Apache or Nginx, and Nodejs too!
+    * if certbot is activated for Apache, then it works for Nodejs too... so follow the following steps
+    * register or renew certbot under Apache server (Apache server has to be activated when first to register certbot, but when to renew certbot, Apache doesn't need to be activated; however, Apache will be automatically activated after renew of certbot
+    * sequence of actions
+        - sudo pm2 stop 0 <process id>
+        - sudo service apache2 start
+        - sudo certbot --apache
+        or 
+        - sudo certbot renew --quiet
+        - sudo service apache2 stop
+        - sudo pm2 start 0 <process id>
+    * CRON (redefined)
+        sudo crontab -e
+        add: 
+        30 4 1 * * sudo pm2 stop 0 
+        32 4 1 * * sudo service apache2 start
+        34 4 1 * * sudo certbot renew --quiet
+        36 4 1 * * sudo service apache2 stop
+        38 4 1 * * sudo pm2 start 0
+
+    ***** NodeJS: new approach *****
+        The above approach might be outdated. I am trying direct method for Nodejs and certbot...
+
+- .bashrc / .vimrc (copied from issuetracker.info)
+- hostnamectl / sudo hostname tnpartners-net
+- installed dos2unix, tree
+- Python and virenv installation
+    Python already installed 
+    virtualenv installation: sudo apt install python3-virtualenv
+    venv activated in .bashrc
+    in venv, python3 -> python, pip3 -> pip
+- Django intalled in venv: pip install django
+    sudo apt-get update && sudo apt-get upgrade
+    vim /etc/hosts
+        add (public IP address 3.36.205.76) tnpartners-net 
+- Git setup
+    venv
+    create a repo in github
+    add a .gitignore in the repo
+    create a personal access token from github website (allow all rights, and no expiration)
+    create a django project
+        django-admin startproject tnp / startapp main
+    git config --global user.email andy.chiwon.kim@gmail.com
+    git config --global user.name andy (does not need to be github id)
+    git config --global alias.graph "log --graph --oneline --decorate=short"
+    in tnp directory...
+        git init
+        git branch -m master main 
+            change branch name from master to main, or just created repo: git branch -m main
+            set the name the same as gitbub repo branch name and local branch name: either main or master
+        git remote add origin https://github.com/iburn78/tnp
+        git config credential.helper store
+        git pull origin main
+            use id with github id / password with personal access token just created 
+        git add -A / git commit -m "initial commit"
+        git push --set-upstream origin main
+- Django settings.py
+    use config_file (i.e., config.json) to put SECRET_KEY
+        be sure to follow syntax of json (e.g., double quotation and no comma at the last item)
+    adjust allowed_hosts: 'localhost', '3.36.205.76', 'tnpartners.net'
+    adjust TIME_ZONE 'Asia/Seoul'
+    add static / media settings
+    migrate / create superuser
+- Apache2 setup for Django
+   sudo service apache2 reload / restart
+   sudo systemctl restart/reload apache2
+   sudo systemctl status apache2.service
+   sudo service apache2 stop
+   sudo apt-get install libapache2-mod-wsgi-py3
+   cd /etc/apache2/sites-available
+   cp conf files to tnp conf files (to have backups)
+   add the following to tnp-le-ssl.conf
+     Alias /static /home/ubuntu/tnp/static
+     <Directory /home/ubuntu/tnp/static>
+         Require all granted
+     </Directory>
+
+     Alias /media /home/ubuntu/tnp/media
+     <Directory /home/ubuntu/tnp/media>
+        Require all granted
+     </Directory>
+
+     <Directory /home/ubuntu/tnp/tnp>
+         <Files wsgi.py>
+             Require all granted
+         </Files>
+     </Directory>
+     WSGIScriptAlias / /home/ubuntu/tnp/tnp/wsgi.py
+     WSGIDaemonProcess tnp_app python-path=/home/ubuntu/tnp python-home=/home/ubuntu/venv
+     WSGIProcessGroup tnp_app
+     WSGIApplicationGroup %{GLOBAL}
+   sudo a2dissite 000-default.conf, 000-default-le-ssl.conf
+   sudo a2ensite tnp.conf, tnp-le-ssl.conf
+   sudo systemctl reload apache2
+   sudo apachectl configtest (to check syntax)
+   error log: lookup in /var/log/apache2/error.log
+   access granting
+       sudo chown :www-data tnp/db.sqlite3
+       sudo chown ubuntu tnp/db.sqlite3
+       sudo chmod 664 tnp/db.sqlite3
+       sudo chown :www-data tnp
+       sudo chmod 775 tnp
+       sudo chown -R :www-data tnp/media
+       sudo chmod -R 775 tnp/media
+--------------------------------------------------------
+- IMPORTANT: Python 3.10 does not work with mod-wsgi... => should not use Django probably
+- Below, converted to use NodeJS/Express / stop using apache2 and Django
+- Removed venv... (virtualenv)
+--------------------------------------------------------
+    
+- on Node.js
+    npm init (-y)
+    npm install express: install express for the package
+    setting up http and https / should run with "sudo node index.js"
+    index.js is like:
+
+####
+const express = require('express');
+const https = require('https');
+const http = require('http');
+const fs = require('fs');
+
+const options = {
+  key: fs.readFileSync('/etc/letsencrypt/live/tnpartners.net/privkey.pem'),
+  cert: fs.readFileSync('/etc/letsencrypt/live/tnpartners.net/fullchain.pem')
+};
+
+const app = express();
+http.createServer(app).listen(80);
+https.createServer(options, app).listen(443, () => {}); 
+app.get("*", (req, res) => {
+    if(req.secure){
+        // --- https
+    }else{
+        // -- http
+        return res.redirect("https://" + req.headers.host + req.url);
+    }
+})
+####
+
+    sudo npm install -g pm2@latest: install pm2 globally across packages
+    npm ls / npm ls -g
+    sudo pm2 start index.js -i max: cluster mode which uses max available CPUs (vs fork mode using only one CPU) 
+    sudo pm2 status
+    sudo pm2 stop / restart / delete id
+    sudo pm2 logs (--lines 200)
+    sudo pm2 monit 
+    sudo pm2 start <script|name|id> --watch
+    sudo pm2 start <script|name|id> --watch --ignore-watch "node_modules"
+    refer to pm2 quick start guide in the web
+        
+
+#### notes on Express basics ###
+
+- initial set-up
+    npm init -y
+    npm i express
+- nodemon
+    npm i --save-dev nodemon
+    add to package.json
+      "scripts": {
+        "devStart": "nodemon server.js"
+      },
+    npm run devStart // to execute nodemon
+- res commands
+    res.send('data')
+    res.sendStatus(500)
+    res.status(500).send('data')
+    res.json({ some json })
+    res.download('server.js')
+    res.render(...): see below
+- view engine for nodejs ejs
+    npm i ejs 
+    vscode install extension 'EJS language support'
+    add in server.js (top file)
+      app.set("view engine", "ejs")
+      res.render("index", { data: "some data"})
+    make 'views' directory and locate ejs files in there (which are html files)
+    can be accessed in ejs like
+      <%= data %>
+      <%= locals.data || "alternative data if 'data' is not defined" %>
+- router
+    make 'routes' directory and locate for example users.js
+    in users.js
+      const express = require('express')
+      const router = express.Router()
+      
+      router.get('/', (req, res) => {
+        res.send('user list')
+      })
+      
+      router.post('/', (req, res) => {
+        res.send('craete a user')
+      })
+
+      router.get('/new', (req, res) => {
+        res.send('user new form')
+      })
+
+      router.get("/:id", (req, res) => {
+        res.send(`get user with ID ${req.params.id}`)
+      })
+
+      module.exports = router
+    
+    in server.js
+      const userRouter = require('./routes/users')
+      app.use('/users', userRouter)
+    
+    note 
+      :id is a variable 
+      can be accessed with ${req.params.id}
+    
+    simplification
+      router.get("/:id", (req, res) => {
+        res.send('')
+      })
+      router.put("/:id", (req, res) => {
+        res.send('')
+      })
+      router.delete("/:id", (req, res) => {
+        res.send('')
+      })
+      
+      is the same as 
+
+      router
+        .route("/:id")
+        .get((req, res) => {
+          res.send('')
+        })
+        .put((req,res) => {
+          res.send('')
+        })
+        .delete((req,res) => {
+          res.send('')
+        })
+
+- middlewares: runs between the starting of a request and the ending 
+    the followig code runs when routner executes with parameter 'id' in it
+      router.param("id", (req, res, next, id) => {
+        console.log(id) // do something in the middle
+        next() // as this is middleware, next() has to be executed to continue
+               // this runs before the get, put, delete router functions
+      })
+    middleware is useful for logging
+      app.user(logger) // location of this code is important as the code is excuted top to bottom
+      function logger(req,res,next){
+        console.log(req.originalUrl)
+        next()
+      }
+      logger can be merged to specific router as:
+        app.get("/", logger, (req, res) => {...})
+      you can also define the logger in the users.js 
+        define function in users.js
+        register it with: 
+          router.use(logger) // every single router in users will use this logger
+
+- serving static files
+    make 'public' directory (conventional naming)
+    add to server.js 
+      app.use(express.static("public"))
+    css or javascript files will go in there...
+
+- handling POST
+    add the following middleware in server.js to capture information coming from forms in POST request
+      app.use(express.urlencoded({ extended: true }))
+    render a form page that contains for example: 
+      <form action="/users" method="POST">
+        <label for=""> First Name
+          <input type="text" name="firstName" value="<%= locals.firstName %>" />
+        </label>
+        <button type="submit">Submit</button>
+      </form>
+    the following code can access the form data in users.js
+      router.post('/', (req, res) => {
+        console.log(req.body.firstName)
+        res.send('Hi')
+      })
+
+- handling JSON
+    add the following middleware in server.js to let the server read json file from the client
+      app.use(express.json())
+   
+- getting query string information
+      url/?name=John 
+  can be accessed 
+      req.query.name
+    
+- working with SQLITE3
+    npm i sqlite3
+    create an empty db file (e.g., test.db)
+
+####
+const sqlite3 = require('sqlite3').verbose();
+let sql;
+
+const db = new sqlite3.Database('./test.db',sqlite3.OPEN_READWRITE, (err) => {
+  if (err) return console.error(err.message);
+})
+
+// create db
+// sql = 'CREATE TABLE users(id INTEGER PRIMARY KEY, first_name, last_name, username, password, email)'
+// db.run(sql); 
+
+// drop table 
+// db.run('DROP TABLE users');
+
+// insert data
+// sql = 'INSERT INTO users(first_name, last_name, username, password, email) VALUES (?,?,?,?,?)';
+// db.run(
+//   sql, 
+//   ["fred", "fredson", "fred_user", "testtwo", "a@a.com"],
+//   (err) => {
+//     if (err) return console.error(err.message);
+//   }
+// );
+
+// update data
+sql = 'UPDATE users SET first_name = ? WHERE id = ?';
+db.run(sql, ['jake', 1], (err) => {
+    if (err) return console.error(err.message);
+})
+
+// delete data
+sql = 'DELETE FROM users WHERE id=?';
+db.run(sql, [1], (err) => {
+    if (err) return console.error(err.message);
+})
+
+// query the data
+sql = 'SELECT * FROM users';
+db.all(sql, [], (err, rows) => {
+    if (err) return console.error(err.message);
+    rows.forEach(row =>{
+      console.log(row)
+    })
+})
+####
+- refer to video: https://www.youtube.com/watch?v=mnH_1YGR2PM
+  for EXPRESS and SQLITE3
+
+
+####
+Increasing EBS volume size in AWS
+
+- Step 1: Take Snapshot of EBS Volume (not a mandatory)
+          In EC2 console, there is a volumes page under EBS section, and you can take action of taking a snapshot in that page
+- Step 2: Increase EBS volume size in AWS console
+          In the same volumes page, you can increase EBS volume (you can only increase, not to decrease)
+- Step 3: Extend Linux file syste after resizing a volume
+          1) df -hT
+          2) sudo lsblk 
+             - check the name of partition: if it is xvda and there is one disk...
+          3) sudo growpart /dev/xvda 1 
+          4) Extend the file system on /:
+             - if XFS file system: sudo xfx_growfs -d / 
+             - if EXT4 file system: sudo resize2fs /dev/root (need to check the device name of / using df -hT)
+
+#### 
+sudo crontab -e
+0 23 * * * sudo rtcwake -m mem -l --date +540min
+=> set the linux system to go into sleep at 11pm and wake up at 8am everyday
+

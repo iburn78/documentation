@@ -1,0 +1,686 @@
+[ISSUETRACKER REBUILD NOTE]
+
+- 2/13/2021, issuetracker.info registered at Route53 AWS ($12/yr, autorenewal)
+- AWS EC2 smallest ubuntu leased
+- Registered the domain name to EC2
+    Create an elastic IP address at EC2 (allociate and associate)
+    At hosted zones of Route 53, create a record for issuetracker.info that contains the elastic IP address 
+- Craeted a key pair for EC2: issuetracker_keypair.pem, gmailed to me
+- ssh -i issuetracker_keypair.pem ubuntu@issuetracker.info
+- ufw setting at EC2
+    sudo apt-get install ufw
+    sudo ufw default allow outgoing
+    sudo ufw default deny incoming
+    sudo ufw allow ssh
+    sudo ufw allow http/tcp
+    sudo ufw enable
+    sudo ufw status
+    (sudo ufw allow 8000 <-> sudo ufw delete allow 8000)
+- Modified security group for EC2 control console to include port 80 (http)
+- Apache2 setting at EC2
+    sudo apt-get install apache2
+    sudo vim /etc/apache2/sites-available/000-default.conf
+        ServerName issuetracker.info
+    sudo a2ensite 000-default.conf    
+    sudo service apache2 restart
+    sudo service apache2 reload
+    sudo systemctl reload apache2
+- HTTPS setup
+    sudo apt-get install snapd
+    sudo snap install core; sudo snap refresh core
+    sudo snap install --classic certbot
+    sudo ln -s /snap/bin/certbot /usr/bin/certbot
+    sudo certbot --apache
+    sudo certbot renew --dry-run
+    sudo apachectl configtest
+    sudo ufw allow https
+    sudo service apache2 restart
+    * add HTTPS to security group for EC2 to include port 443 (https)    
+    * CRON
+        sudo crontab -e
+        add:
+        30 4 1 * * sudo certbot renew --quiet # every month, 4:30AM, 1st day renew
+    (for django apache setting with https, refer to Corey MS's video on HTTPS)
+- Change timezone: sudo timedatectl set-timezone Asia/Seoul
+- Note: Linux terminal commands
+    ctrl l: clear
+    ctrl d: logout
+    ctrl a/e: move to fron/end
+    ctrl u/k: cut to/from
+    ctrl y: paste
+    ctrl w: cut left word
+    ctrl r: reverse history search
+    ctrl z/q: suspend/resume
+    ctrl b/f: back/forward a character
+    alt b/f: back/forward a word
+    alt d: delete a word forward
+    rm -rf directory
+    grep -rnw '/path/to/' -e 'word_to_find' # search exact text in the given dir and sub-dirs
+        -r: recursive
+        -n: numbering 
+        -w: exact matching
+        -e: use pattern
+    grep -i "search text" . # case insensitive
+- Tips
+    .vimrc: a few good options (also make dir ~/.vimbackup for backup files and swap files)
+    .bashrc: especially history search
+    sudo apt install tree
+    sudo apt install dos2unix
+    scp -i issuetracker_keypair.pem 'origin files' ubuntu@issuetracker.info:~/
+    ssh pem key file has to have permission of 0400 from linux
+    scp -r option for copying a directory
+    tree -L 4 
+    tree -I <folder> to exclude that specific folder
+    using pipe with xargs: find -type d -name migrations | xargs ls -al
+    * find . -name migrations | xargs rm -r 
+    * do not use this with rm except command !('filename to exempt')
+    vim case insensitive search: put "\c' such as /\c<search word>
+- Vim multi buffer editing
+    :buffers or :ls
+    :e <file> or :badd <file> or :n <file> | tab open :tabe <file>
+    :1,3bw or :bdelete 1 and :bdelete 3
+    :%bw close all 
+    :args <* wild card> open as indicated
+    :b1 :bn :bp or :bN
+    # + ctrl + ^ (normal mode)
+    :bd or :bdelete close current buffer
+    moving between buffers ctrl+^ and #ctrl+^ (depending on OS, ctrl+6 also works, but not always)
+    multibuffer search :bufdo g/something to search/
+    :ls
+- Vim registers
+    :reg
+    "" just yanked
+    "+ external
+    ctrl + r (insert mode)
+    ". last inserted text
+    "% current file path
+    ": most recently executed command
+    "# last edited file name
+    "= result of command, e.g., system('ls')
+    just yanked word/contents are stored in buffer 0 (useful when replacing words)
+- Vim search and replace
+    :<range>s/f/t/x, 
+    where range: none - current line, % - all lines, .,$ - to end
+    x: g - all, c - confirm
+    * / # whole word search forward / back
+    :noh - clearing current highlights
+    /"search word"\c # for case insensitive seaerch in vim
+    iw: innerword -> viw highlights current word, ciw changes current word, diw deletes current word
+    viwp: replace a word
+- Vim movements and others
+    ctrl + up / down (35 lines)
+    ctrl + forward / back (70 lines)
+    gg / G
+    n + shift + Home / Middle / Last (n means n lines from..., H/M/L) 
+    zt / zz / zb: move current line to top / center / bottom of the screen
+    :!<shell command>
+    :pwd current working directory
+    :cd change directory
+    ctrl + o / i: retrace backward / forward 
+    n.: repeat last changes n times
+    0 / ^ / $: 
+    p / P / gp / gP
+    ctrl + [: esc
+    insert-mode: ctrl+w deletes a word before the cursor
+    :set spell (move to misspelled [s ]s) 
+    :set nospell
+    f F to the char, t T to before the char
+    in .vimrc define 
+        command! W write
+        command! Q quit
+    if ctrl-s freezes the vim terminal (in linux), ctrl-q can resume it
+    "0 will always have the content of the latest yank (and moves to 1, 2, ... )
+    t(x): stops just before x, f(x): stops at x, w: move to next word
+    daw: delete a word vs dw, db
+    d/y/c it - in tag, at - at tag
+       iw - in word, aw - a word 
+       ip - in paragraph, ap - a paragraph
+       is - in sentence, as - a sentence
+       i" - in "", a" - a ""
+       i[, i(, a[, a( etc...
+    split of windows
+    :vsp 
+    :sp 
+    ctrl+w, hjkl -> movements among the screens
+    :!python % -> execute the current file in python
+- Vim marks 
+    mc: mark current position with mark in a...Z
+    'c: go to mark in current file
+    'C: go to mark in any file
+    '0..9: go to last exit position
+    '' / '" go to position before jump, at last edit
+    :marks
+- Python installation (python 3.7.9 installed)
+    sudo apt update
+    sudo apt install software-properties-common
+    sudo add-apt-repository ppa:deadsnakes/ppa
+    sudo apt install python3.7
+    sudo apt update
+    sudo apt install python3-pip
+    sudo apt install python3-django (sudo apt remove python3-django)
+    sudo pip3 install virtualenv
+- Linux $PATH, sudo, su, groups, and environment variables
+    echo $PATH
+    /etc/environment: saves initial $PATH (use less or more commands to check)
+    .bashrc or .bash_profile may customize $PATH 
+    path for sudo is defined in 
+        sudo vim /etc/sudoers
+        secure_path
+    sudo su: opens a sub-terminal with root
+    /etc/group: saves groups and associated users
+    (e.g., more /etc/group | grep ubuntu)
+    sudo only works for users in the group sudo
+    find /path option filename: find files
+        find . -type f -name *.txt
+        find . -type d -name note*
+    grep multiple strings
+        grep 'stringA\|stringB'
+- Bash settings in .bashrc and .bash_profile
+    export PATH=$PATH:. 
+        var_name=var_value, and then can access with $var_name
+        export command makes local variable to global variable
+        python program is located in /usr/bin (which python3.7)
+    [do not use this] alias python=python3.7 
+    * alias does not work with sudo, as alias only works when it is the first word of the command
+    * do not use alias for python name change
+    * virtualenv does not properly work under this alias 
+        - virtualenv copies python3.7 when creating a virtualenv(call it as 'venv'), and names it to 'python' not 'python3.7'
+        - python3.7 in venv invokes python outside of venv, which is not the intention of virtualenv
+        - it is not easy to detect since alias works only when it is the first word of the command line
+            which python: output the path to the python in venv
+            python manage.py: due to the alias it runs manage.py with python3.7 outside of venv
+            python --version: does not help as versions are the same between python in venv and python3.7 in system
+    new_command() { bash_command with arguments and/or lines of commands } 
+    * .bash_profile (or ~/.profile): runs once when logged in
+    * .bashrc: runs for each terminal
+- Shell script
+    create a file with *.sh (not a must)
+    sudo chmod +x <filename>
+    start with #!/bin/sh (not a must)
+    execute with . or source or ./<scriptfile>
+    respect space in shell script
+    gitacp(){
+        git add .
+        if [ '$1' == '' ]  
+        then 
+            git commit -m "wip"
+        else 
+            git commit -m '$1'
+        fi
+        git push
+    }
+- git reconcile conflict between two local locations: e.g., keeping latest files from both locations
+    git fetch origin
+    git merge origin/main
+    git checkout --ours path/to/binaryfile 
+    or 
+    git checkout --theirs path/to/binaryfile 
+    git add -A
+    git commit -m "wip"
+    git push
+  in a case that I want to keep local file, then should go through resolve conflict: 
+    git add [file_that_I_want_to_keep] (although it is not the latest)
+    git merge --continue # this is effectively the same as 'git commit' in this context
+    git commit -m 'wip'
+    git push
+- git remove .gitignore cache
+    git rm -r --cached .
+    git add -A
+    git commit -m "wip"
+    git push
+- Virtualenv 
+    * note that virtualenv uses already system-installed python (which is the first one to be found in the system)
+        - python has to be pre-installed
+        - pip3 is required to install virtualenv itself, but pre-installed pip3 is not reused in a newly created virtualenv (call it as 'venv')
+    * you may specify a python version when creating a venv (with -p option) when there are multiple python versions installed
+    * since python is copied when creating a virtualenv, command "python" has to be used, not "python3.7" (python3.7 invokes python outside of venv)
+    * pip is newly installed, so the version may be different from the pre-installed pip. And, command "pip"=="pip3" in venv
+    * fresh created venv does not use any pre-installed package 
+    * to access previously installed packages, use sudo (e.g., sudo pip3 --version, sudo django-admin --version)
+    * however, do not use sudo under venv as it refers to different versions of software/packages 
+    virtualenv venv
+    source venv/bin/activate 
+    deactivate
+    pip freeze > requirements.txt 
+    (or, pip freeze --local: to only list-up locally-installed packages) 
+    pip install -r requirements.txt
+    (in .bashrc) venv(){ source ~/venv/bin/activate }: command "venv" to activate venv
+- Django set-up
+    under venv, use pip over apt (as apt may require sudo, which causes path conflict)
+    pip install django (or Django)
+    django-admin startproject issuetracker
+    python manage.py startapp blog
+- Deploying Django to AWS
+    sudo apt-get update && sudo apt-get upgrade
+    hostnamectl set-hostname django-server
+    vim /etc/hosts 
+        add (public IP address) django-server
+- Django settings.py
+    adjust allowed_hosts: '52.78.166.22', 'issuetracker.info'
+    use config_file (i.e., config.json) to put SECRET_KEY, EMAIL_USER, EMAIL_PASS (this is app password by Google)
+        be sure to follow syntax of json (e.g., double quotation and no comma at the last item)
+    adjust TIME_ZONE
+    add STATIC_ROOT, STATIC_URL, etc at the end of the settings.py
+    adjust INTALLED_APPS to include 'crispy_forms', 'taggit', etc
+- Django migrations
+    Django migrations are for modifying database
+    each app's migrations folder must have __init__.py file which may be an empty file
+    python manage.py showmigrations, makemigratoins, migrate, insepctdb, flush ... etc 
+    sometimes, you may have to delete 000*** files for clean migrations
+- Django admin for issuetracker
+    python manage.py createsuperuser 
+    admin has to approve users registered
+    It seems that you don't need to add additional permissions to the newly added users
+- Apache setting for Django
+    (assuming apache2 is already installed)
+    sudo apt-get install libapache2-mod-wsgi-py3
+    sudo cp 000-default.conf django_project.conf
+    add code to django_project.conf (as recommneded in django doc):
+        Alias /static ....
+        <Directory ... 
+        </Directory>
+        WSGIScriptAlias / <path_to_wsgi.py>
+        WSGIDaemonProcess <app_name> python-path=<...> python-home=<...>
+        WSGIProcessGroup <app_name>
+    sudo a2ensite django_project.conf
+    sudo a2dissite 000-default.conf
+    granting access:
+        sudo chown :www-data issuetracker/db.sqlite3
+        sudo chown ubuntu issuetracker/db.sqlite3
+        sudo chmod 664 issuetracker/db.sqlite3
+        sudo chown :www-data issuetracker
+        sudo chmod 775 issuetracker
+        sudo chown -R :www-data issuetracker/media
+        sudo chmod -R 775 issuetracker/media
+    settings.py debug=False
+    sudo systemctl reload apache2
+    sudo service apache2 restart
+    for print-outs in django -> look up in /var/log/apache2/error.log (as defined in apache config)
+- HTTPS
+    open django_project.conf in apache2
+        uncomment server name issuetracker.info (if not already done)
+        temporary comment out WSGI lines 
+    sudo certbot --apache
+        this adds codes to django_project.conf
+        also creates django_project_le_ssl.conf, which has port 443 instead of 80
+        remove our own codes from django_project.conf, and leave what's automatically added
+        leave everything in django_project_le_ssl.conf and uncomment WSGI part
+    sudo apachectl configtest 
+    sudo ufw allow https 
+    sudo service apache2 restart
+    redirection
+        <head>
+            <meta http-equiv='refresh' content='0; URL=https://issuetracker.info'>
+        </head>
+- Django staticfiles
+    during development (debug = True) static files are served from each app's static directory by the 'runserver'
+    other webservers such as apache will serve static files from STATIC_ROOT, so 'collectstatic' command has to be run
+    for media files which were not used with 'static' command in debug mode, MEDIA_URL and MEDIA_ROOT have to be explicitly added in urls.py (as already did)
+    (media files: user uploaded static files)
+    STATIC_ROOT is for collectstatic / STATICFILES_DIRS is where to find static files to collect / it might be better to use each app's own static file folder while development
+    to refresh CSS in Chrome, try ctrl+f5
+- VSCode tips
+    Emmet: HTML template auto completion
+    Command Palette: Ctrl+Shift+P, F1
+    Quick Open: Ctrl+P
+    Settings: Ctrl+,
+    Toggle Sidebar: Ctrl+B
+    Toggle Terminal: Ctrl+`
+    Keyboard Shortcuts: Ctrl+K+S
+    Alt+up/down or Alt+shift+up/down: move or copy line(s)
+    Ctrl+enter: start next line
+    Ctrl+space: show autocompletion menus
+- VSCode useful extensions
+    Material theme
+    Material icon theme
+    Prettier - Code Formatter
+     - ctrl + ,  for setting 
+       change format on savePrettier:Tab Width 2
+       JavaScript > Preferences: Quote Style -> single
+       TypeScript > Preferences: Quote Style -> single
+    bracket pair colorizer
+    Indent-rainbow
+    Auto rename tag
+     - do not use this... will cause bugs/confusion
+     - settings> Editor:Linked Editing (on) -> do not use this as well
+    CSS PEEK
+     - ctrl + 'css' -> move to definition
+    HTML CSS SUPPORT
+     - lets CSS autocompletion in HTML
+    LIVE SERVER
+     - command palette> live server: Open with Live Server
+     - change default browser to Chrome
+    HTML to CSS autocompletion
+     - lets CSS autocompletion in CSS for tags already defined in HTML
+    Kite: smarter code completion using AI
+     - but seems heavy: reconsider
+    autopep8 (pip install not vscode extension) 
+     - might be helpful in adjusting/improving code style in python
+     - in order not to activate, put comment at the end of the line : # nopep8
+- Django tips
+    model query: Q objects are helpful for complex queries because they can be combined using logical operators and(&), or(|), negation(~)
+    model query: __icontains looks for words case-insensitive
+    in django templates, 'with' could be used with 'block' to assign variables
+    Never use the built-in Django User model directly, even if the built-in Django User implementation fulfill all the requirements of your application.
+    * This is also the recommendation from official doc
+    * At least extend the AbstractUser model and switch the AUTH_USER_MODEL on your settings.
+    ccbv.co.uk: view hierachy 
+    Form classes are to match HTML, while Model classes are to match DB
+    * in between there is ModelForm classes used with Meta, and there are some variations such as UserCreationFrom which is a ModelForm (used with Meta)
+    django shell MODEL.objects.all().delete() -> does not properly delete the objects (i.e., does not call delete())
+    in django classbased views, inheritance sequence is important (e.g., LoginRequiredMixin, UserPassesTestMixin, CertainView have to be used in this sequence) 
+    django session data: cleared when user is logged out
+- Python tips
+    The __init__.py file indicates that the files in a folder are part of a Python package. 
+    * Without an __init__.py file, you cannot import files from another directory in a Python project.
+- Switching server in apache and Django testserver (local)
+    sudo a2ensite django_project-le-ssl.conf, or sudo a2ensite exercise05-le-ssl.conf, etc
+    sudo a2dissite django_project-le-ssl.conf, or sudo a2dissite exercise05-le-ssl.conf, etc
+    sudo systemctl reload apache2
+    python manage.py runserver 0.0.0.0:8010 (port)
+- Change error logging level in apache2: 
+    cd /etc/apache2/
+    sudo vim apache2.conf
+    edit: LogLevel info 
+- Large file upload issue (not solved yet....):
+    may need to add the following in apache2 conf file 
+        WSGIApplicationGroup %{GLOBAL}
+    next to WSGIProcessGroup <app_name> line
+    (might be helpful anyway... or it should be inserted in some other .conf file too)
+- X-sendfile
+    may consider implementing this in aws, as it is more efficient in serving large files, when traffic increases
+- Steps in django reset
+    delete db (sqlite)
+    create a new db (through manage.py)
+    give permissions to the db (e.g., chmod 664, chown :www-data)
+    clear migration directories except __init__.py
+    clear media content (except default contents)
+    clear and create exception_log.txt in etc directory with permission (e.g., chmod 664, chown :www-data)    
+    (or you can remove model instances through shell: Post, Card, User not to delete the db itself)
+- Steps in django git-transfer between local and remote
+    makemigrations / migrate / collectstatic in local
+    gacp / git stash / gpr / git pull 
+    makemigrations / migrate / collectstatic in remote
+- Permissions in django/aws
+    file: only group permission (:www-data) needs to be given / read and write rights need to be given (664)
+    directory: both user and group permissions (www-data, :www-data) need to be given / execution right needs to be given (775)
+- Bootstrap tips
+    float-end -> itself
+    justify, align -> items inside
+    put m-0 in row, and p-0 in col and container
+        <div class="container-fluid p-0">
+        <div class="row m-0">
+        <div class="col p-0">
+- JSON vs XML: use JSON
+    const data = '{"employees":[
+      {"firstName":"John", "lastName":"Doe"},
+      {"firstName":"Anna", "lastName":"Smith"},
+      {"firstName":"Peter", "lastName":"Jones"}
+    ], "age": "function () {return 30;}" 
+    }';
+    const obj = JSON.parse(data);
+    obj.age = eval("(" + obj.age + ")");
+
+    obj.employees[0].lastName -> Doe
+    obj.age() -> 30
+    json_data = JSON.stringify(obj) -> will return JSON data format
+- Django model, form, view, html for ajax
+    <models.py>
+        from django.db import models
+
+        class Friend(models.Model):
+            nick_name = models.CharField(max_length=100, unique =  True)
+            name = models.CharField(max_length=100)
+            lives_in = models.CharField(max_length=150, null = True, blank = True)
+            dob = models.DateField(auto_now=False, auto_now_add=False)
+
+            def __str__(self):
+                return self.nick_name
+
+    <forms.py>
+        from .models import Friend
+        from django import forms
+        import datetime
+
+        class FriendForm(forms.ModelForm):
+            ## change the widget of the date field.
+            dob = forms.DateField(
+                label='What is your birth date?', 
+                # change the range of the years from 1980 to currentYear - 5
+                widget=forms.SelectDateWidget(years=range(1980, datetime.date.today().year-5))
+            )
+            def __init__(self, *args, **kwargs):
+                super(FriendForm, self).__init__(*args, **kwargs)
+                # add a "form-control" class to each form input for enabling bootstrap
+                for name in self.fields.keys():
+                    self.fields[name].widget.attrs.update({
+                        'class': 'form-control',
+                    })
+            class Meta:
+                model = Friend
+                fields = ("__all__")
+
+    <views.py>
+        from django.shortcuts import render
+        from django.http import JsonResponse
+        from django.core import serializers
+        from .forms import FriendForm
+        from .models import Friend
+        from django.views import View
+
+        def indexView(request):
+            form = FriendForm()
+            friends = Friend.objects.all()
+            return render(request, "myapp/index.html", {"form": form, "friends": friends})
+
+        def postFriend(request):
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest' and request.method == "POST":
+                form = FriendForm(request.POST)
+                if form.is_valid():
+                    instance = form.save()
+                    ser_instance = serializers.serialize('json', [ instance, ])
+                    return JsonResponse({"instance": ser_instance}, status=200)
+                    # DOUBLE JSON... -> need to use double JSON.parse()
+                else:
+                    return JsonResponse({"error": form.errors}, status=400)
+            return JsonResponse({"error": ""}, status=400)
+
+        def get_java(request):
+            name = request.GET.get('name', None)
+            age = request.GET.get('age', None)
+            result = name + " with age " + age + " entered "
+            return JsonResponse({"result": result}, status = 200)
+
+        def post_java(request):
+            return JsonResponse({"result":request.POST.get('comment')}, status = 200)
+
+        def checkNickName(request):
+            if request.headers.get('X-Requested-With') == 'XMLHttpRequest' and request.method == "GET":
+                nick_name = request.GET.get("nick_name", None)
+                if Friend.objects.filter(nick_name = nick_name).exists():
+                    return JsonResponse({"valid":False}, status = 200)
+                else:
+                    return JsonResponse({"valid":True}, status = 200)
+            return JsonResponse({}, status = 400)
+
+        # if request.is_ajax(): is jquery specific way, intead use the following
+        # if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+        # request.setRequestHeader('X-Requested-With', 'XMLHttpRequest'); has to be set after open()
+
+    <or class-based...>
+        class FriendView(View):
+            form_class = FriendForm
+            template_name = "myapp/index.html"
+
+            def get(self, *args, **kwargs):
+                form = self.form_class()
+                friends = Friend.objects.all()
+                return render(self.request, self.template_name, {"form": form, "friends": friends})
+
+            def post(self, *args, **kwargs):
+                if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest' and self.request.method == "POST":
+                    form = self.form_class(self.request.POST)
+                    if form.is_valid():
+                        instance = form.save()
+                        ser_instance = serializers.serialize('json', [ instance, ])
+                        return JsonResponse({"instance": ser_instance}, status=200)
+                    else:
+                        return JsonResponse({"error": form.errors}, status=400)
+                return JsonResponse({"error": ""}, status=400)
+
+    <urls.py>
+        path('', indexView),
+        path('post/ajax/', postFriend, name = "post_friend"),
+        path('get/ajax/', checkNickName, name = "check_nickname"),
+        path('post_java/', post_java, name = "post_java"),
+        path('get_java/', get_java, name = "get_java"),
+        path("cbv", FriendView.as_view(), name = "friend_cbv"),
+        # post request url must be ending with '/'
+
+    <index.html>
+        {% extends "myapp/base.html" %}
+        {% block content %}
+        <form id="friend-form">
+            {% csrf_token %}
+            {% for field in form %}
+            <label>{{ field.label }}</label>
+            {{ field }}
+            {% endfor %}
+            <input type="submit" value="Create Friend">
+            # 'submit' can be captured in javascript -> see below
+        </form>
+        <button type="button" onclick="get_java(event)">get</button>
+        # 'event' parameter is necessary for prevent default in javascript
+
+        <form id="myForm">
+            <input type="text" name="comment">
+            <button type="button" onclick="postComment(event)">post</button>
+        </form>
+        <div id="result">
+        </div>
+        <table id="my_friends">
+            <thead>
+                <tr>
+                    <th>Nick name</th>
+                    <th>name</th>
+                    <th>DOB</th>
+                    <th>lives in</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for friend in friends %}
+                <tr>
+                    <td>{{friend.nick_name}}</td>
+                    <td>{{friend.name}}</td>
+                    <td>{{friend.dob | date:"Y-m-d"}}</td>
+                    <td>{{friend.lives_in}}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        </div>
+        {% endblock content %}
+
+        {% block javascript %}
+        <script>
+            function get_java(e) {
+                e.preventDefault();
+                var request = new XMLHttpRequest();
+                request.open("GET", "get_java?name=Andy&age=45");
+                request.onreadystatechange = function() {
+                    if(this.readyState === 4 && this.status === 200) {
+                        var dict = this.responseText;
+                        var obj = JSON.parse(dict); 
+                        document.getElementById("result").innerHTML = obj.result;
+                    }
+                };
+                request.send();
+            }
+    
+            function postComment(e) {
+                e.preventDefault();
+                var request = new XMLHttpRequest();
+                request.open("POST", "post_java/");
+                request.onreadystatechange = function() {
+                    if(this.readyState === 4 && this.status === 200) {
+                        var dict = this.responseText;
+                        var obj = JSON.parse(dict); 
+                        document.getElementById("result").innerHTML = obj.result;
+                    }
+                };
+                var myForm = document.getElementById("myForm");
+                var formData = new FormData(myForm);
+                formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                // {{ csrf_token }} can be set in django either in form or like this
+                myForm.reset();
+                request.send(formData);
+            }
+    
+            const nn_field = document.getElementById("id_nick_name");
+            nn_field.addEventListener("focusout", e => {
+                e.preventDefault();
+                var request = new XMLHttpRequest();
+                var nick_name = nn_field.value;
+                request.open("GET", "get/ajax/?nick_name="+nick_name, true);
+                request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                // Header has to be set to check to see if this is ajax request ater open()
+                request.onreadystatechange = function() {
+                    if(this.readyState === 4 && this.status === 200) {
+                        var dict = this.responseText;
+                        var obj = JSON.parse(dict); 
+                        if(!obj.valid) {
+                            alert("You cannot create a friend with same nick name");
+                            nn_field.value = "";
+                            nn_field.focus();
+                        }
+                    }
+                    else if (this.status === 400) {
+                        console.log(this);
+                    }
+                };
+                request.send();
+            }); 
+
+            const friendForm = document.getElementById("friend-form");
+            friendForm.addEventListener('submit', e => {
+                e.preventDefault();
+                let request = new XMLHttpRequest();
+                request.open("POST", "post/ajax/", true);
+                request.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+                // Header has to be set to check to see if this is ajax request ater open()
+                request.onreadystatechange = function() {
+                    if(this.readyState === 4 && this.status === 200) {
+                        var dict = this.responseText;
+                        var obj = JSON.parse(JSON.parse(dict).instance)[0].fields;
+                        // double json.... 
+                        pre = document.querySelector('#my_friends tbody').innerHTML
+                        post = 
+                        `<tr>
+                            <td>${obj.nick_name||""}</td>
+                            <td>${obj.name||""}</td>
+                            <td>${obj.dob||""}</td>
+                            <td>${obj.lives_in||""}</td>
+                        </tr>`
+                        + pre; 
+                        document.querySelector('#my_friends tbody').innerHTML = post;
+                        // innerHTML has to be merged like this way
+                    }
+                };
+                var formData = new FormData(friendForm);
+                // formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+                // {{ csrf_token }} can be set in django either in form or like this
+                myForm.reset();
+                request.send(formData);
+            }); 
+        </script>
+        {% endblock javascript %}
+        # in django templates, multiple include is possible {% block 'name' %} {% endblock 'name %} in a html document
+- decision to transition from Pillow to OpenCV... -> reverted to Pillow
+   python / django / apache / wsgi keep spitting out error messages: Truncated or oversized header ....
+   **** OpenCV is powerful and faster tool to manage images, but takes much more memory in system.
+- linux OOM Killer kills processes if memory usage increases...
+   error message "Truncated...." is due to the killed process by the OOM Killer
+   command: 
+   journalctl --list-boots | awk '{ print $1 }' | xargs -I{} journalctl --utc --no-pager -b {} -kqg 'killed process' -o verbose --output-fields=MESSAGE
+   will generate the processes killed by the OOM Killer
+   htop - to check and monitor memory usage and cpu usage in linux

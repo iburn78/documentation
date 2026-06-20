@@ -34,8 +34,5 @@ inoremap <C-l> <Right>
 command! W write
 command! Q quit
 
-" Visualize tabs/trailing spaces
-set list
-
 " History
 set history=1000

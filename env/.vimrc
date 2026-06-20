@@ -33,6 +33,3 @@ inoremap <C-l> <Right>
 " Convenience
 command! W write
 command! Q quit
-
-" History
-set history=1000

@@ -1,7 +1,5 @@
 set nocompatible
-
 syntax on
-filetype plugin indent on
 
 " Editing
 set autoindent
@@ -21,20 +19,10 @@ set hlsearch
 set incsearch
 set ignorecase
 set smartcase
-set belloff=all
 
 " Colors
 set termguicolors
 hi Search ctermbg=DarkBlue ctermfg=White
-
-" Insert-mode cursor shape
-if exists('$TMUX')
-    let &t_SI = "\ePtmux;\e\e[5 q\e\\"
-    let &t_EI = "\ePtmux;\e\e[2 q\e\\"
-else
-    let &t_SI = "\e[5 q"
-    let &t_EI = "\e[2 q"
-endif
 
 " Navigation
 inoremap <C-h> <Left>
@@ -48,11 +36,6 @@ command! Q quit
 
 " Visualize tabs/trailing spaces
 set list
-set listchars=tab:»·,trail:·
-
-" Performance
-set lazyredraw
-set ttyfast
 
 " History
 set history=1000
